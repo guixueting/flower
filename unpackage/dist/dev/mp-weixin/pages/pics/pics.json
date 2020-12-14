@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "分类",
+  "usingComponents": {
+    "uni-card": "/components/uni-ui/uni-card/uni-card"
+  }
+}
