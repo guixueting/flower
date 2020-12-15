@@ -1,6 +1,7 @@
 {
   "pages": [
-    "pages/pics/pics"
+    "pages/pics/pics",
+    "pages/test/test"
   ],
   "subPackages": [],
   "window": {
@@ -9,5 +10,6 @@
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
   },
-  "usingComponents": {}
+  "usingComponents": {},
+  "sitemapLocation": "sitemap88.json"
 }

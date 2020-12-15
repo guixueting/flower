@@ -165,7 +165,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-var _zgrequest = __webpack_require__(/*! @/utils/zgrequest.js */ 20);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}var uniCard = function uniCard() {__webpack_require__.e(/*! require.ensure | components/uni-ui/uni-card/uni-card */ "components/uni-ui/uni-card/uni-card").then((function () {return resolve(__webpack_require__(/*! @/components/uni-ui/uni-card/uni-card.vue */ 23));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+
+
+
+var _zgrequest = __webpack_require__(/*! @/utils/zgrequest.js */ 20);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}var uniCard = function uniCard() {__webpack_require__.e(/*! require.ensure | components/uni-ui/uni-card/uni-card */ "components/uni-ui/uni-card/uni-card").then((function () {return resolve(__webpack_require__(/*! @/components/uni-ui/uni-card/uni-card.vue */ 31));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
 
 
 {
@@ -176,8 +179,8 @@ var _zgrequest = __webpack_require__(/*! @/utils/zgrequest.js */ 20);function _i
       //当前激活的分类
       active: 0,
       //分类详情数据
-      secondData: [],
-      alias: [] };
+      secondData: [] };
+
 
   },
   onLoad: function onLoad() {
@@ -186,28 +189,22 @@ var _zgrequest = __webpack_require__(/*! @/utils/zgrequest.js */ 20);function _i
   },
   methods: {
     //获取分类数据
-    getPicsCate: function getPicsCate() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var result, i, arr;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return (
+    getPicsCate: function getPicsCate() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var result;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return (
                   (0, _zgrequest.myRequestGet)("/wscshop/weapp/feature_detail.json?alias=IVIUobcC7Z"));case 2:result = _context.sent;
                 _this.cates = result.data.components[2].sub_entry;
-                for (i = 0; i < _this.cates.length; i++) {
-                  _this.alias = _this.alias + _this.cates[i].alias + ",";
-                }
-                arr = _this.alias.substring(0, _this.alias.length - 1);
-                _this.alias = arr.split(",");
-                console.log(_this.alias);
                 _this.leftClickHandle(_this.active, _this.cates[_this.active]);
-                _this.rightData();case 10:case "end":return _context.stop();}}}, _callee);}))();
-    },
-    leftClickHandle: function leftClickHandle(index, item) {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var res;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:
+                // this.rightData(this.cates)
+              case 5:case "end":return _context.stop();}}}, _callee);}))();},
+    leftClickHandle: function leftClickHandle(item, index) {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var res;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:
                 _this2.active = index;_context2.next = 3;return (
                   (0, _zgrequest.myRequestGet)("/wscshop/goods/goodsByTagAlias.json?kdt_id=10056586&alias=" + item.alias +
                   "&pageSize=" + item.goods_num_display + "&page=1"));case 3:res = _context2.sent;
-                _this2.secondData = res.data.list;case 5:case "end":return _context2.stop();}}}, _callee2);}))();
+                console.log(res);
+                _this2.secondData = res.data.list;case 6:case "end":return _context2.stop();}}}, _callee2);}))();
     }
-    // async rightData() {
-    // 	for (var i = 0; i < this.alias.length; i++) {
-    // 		var res = await myRequestGet("/wscshop/goods/goodsByTagAlias.json?kdt_id=10056586&alias=" + this.alias[i])
-    // 		console.log(res.data.list)
+    // async rightData(item) {
+    // 	for (var i = 0; i < this.cates.length; i++) {
+    // 		var res = await myRequestGet("/wscshop/goods/goodsByTagAlias.json?kdt_id=10056586&alias=" + item[i].alias+"&pageSize=" + item[i].goods_num_display)
     // 		this.secondData = [...this.secondData,...res.data.list]
     // 	}
     // 	console.log(this.secondData)

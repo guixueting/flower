@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uni-card": "/components/uni-ui/uni-card/uni-card"
+  }
+}
