@@ -1,6 +1,5 @@
 {
   "pages": [
-    "pages/pics/pics",
     "pages/test/test"
   ],
   "subPackages": [],
@@ -11,5 +10,5 @@
     "backgroundColor": "#F8F8F8"
   },
   "usingComponents": {},
-  "sitemapLocation": "sitemap88.json"
+  "sitemapLocation": "sitemap61.json"
 }

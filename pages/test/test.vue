@@ -1,19 +1,20 @@
 <template>
 	<view class="pics">
 		<scroll-view scroll-y class="left">
-			<view @click="leftClickHandle(index,item)" v-for="(item,index) in cates" :key="item.id" :class="active===index?'active':''">
+			<view @click="changeActive(index)" v-for="(item,index) in cates" :key="index" :class="index===active?'active':''">
 				{{item.title}}
 			</view>
 		</scroll-view>
-		<scroll-view class="right" scroll-y :scroll-into-view="clickId" :scroll-with-animation="true" @scroll="scroll"
-		 @scrolltolower="scrolltolower">
-			<view class="item" v-for="item in secondData" :key="item.id">
-				<view class="card">
-					<image :src="item.image_url"></image>
+		<scroll-view class="right" scroll-y :scroll-into-view="clickId" :scroll-with-animation="true" @scroll="scroll_detail"
+		 @scrolltolower="scroll_bottom">
+			<view class="item" v-for="(item,index) in arr" :key="index">
+				<text class="labelTitle" :id="'id'+index">{{item.title}}</text>
+				<view class="card" v-for="(item1,index1) in item.arr1" :key="index1">
+					<image :src="item1.image_url"></image>
 					<view>
-						<text class="title">{{item.title}}</text>
-						<text class="sell_point">{{item.sell_point}}</text>
-						<text class="activity_price">￥{{item.activity_price}}</text>
+						<text class="text_title">{{item1.title}}</text>
+						<text class="sell_point">{{item1.sell_point}}</text>
+						<text class="activity_price">￥{{item1.activity_price}}</text>
 					</view>
 				</view>
 
@@ -25,7 +26,6 @@
 </template>
 
 <script>
-	import uniCard from "@/components/uni-ui/uni-card/uni-card.vue"
 	import {
 		myRequestGet
 	} from '@/utils/zgrequest.js'
@@ -38,76 +38,90 @@
 				active: 0,
 				//分类详情数据
 				secondData: [],
-				isLeftClick: false,
-				clickId: ""
+				clickId: "",
+				toplist: [],
+				title: "",
+				arr: []
 			}
 		},
 		onLoad() {
 			this.getPicsCate()
-			this.getNodesInfo()
 		},
 		methods: {
-			//获取分类数据
 			async getPicsCate() {
 				const result = await myRequestGet("/wscshop/weapp/feature_detail.json?alias=IVIUobcC7Z")
 				this.cates = result.data.components[2].sub_entry
-				// console.log(result)
 				this.rightData(this.cates)
-				// this.leftClickHandle(this.active, this.cates[this.active])
 			},
 			async rightData(item) {
 				for (var i = 0; i < this.cates.length; i++) {
-					var res = await myRequestGet("/wscshop/goods/goodsByTagAlias.json?kdt_id=10056586&alias=" + item[i].alias+"&pageSize=" + item[i].goods_num_display)
-					this.secondData = [...this.secondData,...res.data.list]
+					var obji = {
+						title: "1",
+						arr1: []
+					}
+					var res = await myRequestGet("/wscshop/goods/goodsByTagAlias.json?kdt_id=10056586&alias=" + item[i].alias +
+						"&pageSize=" + item[i].goods_num_display)
+					this.title = item[i].title;
+					obji.title = this.title;
+					obji.arr1 = res.data.list;
+					this.arr.push(obji);
+					this.secondData = [...this.secondData, ...res.data.list];
+
 				}
-				console.log(this.secondData)
+
 			},
-			leftClickHandle(i,item) {
-				this.clickId = "po" + i;
-				this.active = i;
-				this.isLeftClick = true;
-				// const res = await myRequestGet("/wscshop/goods/goodsByTagAlias.json?kdt_id=10056586&alias=" + item.alias +
-				// 	"&pageSize=" + item.goods_num_display)
-				// this.secondData = res.data.list
+			//切换
+			changeActive(index) {
+				this.active = index;
+				//利用uniapp组件的配置信息。
+				this.clickId = 'id' + index;
+				//解决最后一个 ***来回*** 问题 (由于点击左侧导航，右侧锚点位置信息变化，此时滚动事件也随之滚动。)
+				uni.setStorageSync("resolve", "last");
+				setTimeout(() => {
+					uni.clearStorageSync("resolve")
+				}, 400);
 			},
-			scroll(e){
-				if(this.isLeftClick){
-					this.isLeftClick=false;
-					return;
-				}
-				// console.log(e)
-				let scrollTop = e.target.scrollTop;
-				for(let i=0;i<this.secondData.length;i++){
-					let h1 = this.secondData[i];
-					let h2 = this.secondData[i+1];
-					if(scrollTop>h1&&scrollTop<h2){
+			//滚动过程
+			scroll_detail(options) {
+				//options  为滚动信息。  options.detail.scrollTop  值为相对于scroll-view。
+				if (!uni.getStorageSync("resolve")) {
+					this.get_node_details(options);
+				};
+			},
+			//获取节点信息
+			get_node_details(options) {
+				const query = uni.createSelectorQuery().in(this); //获得实例
+				//获取多个节点方式
+				query.selectAll(".labelTitle").boundingClientRect(data => {
+					//console.log(data); //得到class类名为  selectAll的数组集合
+					this.toplist = data.map(item => {
+						return Math.ceil(item.top);
+					});
+					this.async_detail_msg(options);
+				}).exec();
+			},
+			async_detail_msg(options) {
+				//options  为滚动信息。  options.detail.scrollTop  值为相对于scroll-view。
+				let top_page = options.detail.scrollTop + this.toplist[0];
+
+				for (let i = 0; i < this.toplist.length; i++) {
+					let node1 = this.toplist[i];
+					let node2 = this.toplist[i + 1];
+					if (node2 && top_page >= node1 && top_page < node2) {
 						this.active = i;
+						break;
+					} else if (node2 && top_page === node2) {
+						this.active = i + 1;
+						break;
 					}
 				}
 			},
-			// 滚动到底部
-			scrolltolower(){
-				setTimeout(()=>{
+			//滚动到底部
+			scroll_bottom(options) {
+				setTimeout(() => {
 					this.active = 13;
-				},80)
+				}, 100)
 			},
-			getNodesInfo(){
-				//小程序没有doucument和window对象(undefined)
-				const query =uni.createSelectorQuery().in(this);
-				query.selectAll(".title").boundingClientRect().exec(res=>{
-					let nodes = res[0];
-					let arr = [];
-					nodes.map(item=>{
-						arr.push(item.top);
-					})
-					this.secondData = arr;
-				})
-				
-			}
-
-		},
-		components: {
-			uniCard
 		}
 	}
 </script>
@@ -150,11 +164,16 @@
 			}
 
 			.item {
+				.labelTitle{
+					margin-left: 18rpx;
+					
+					font-size: 24rpx;
+					color: rgb(153,153,153);
+				}
 				.card {
 					width: 100%;
 					display: flex;
 					margin: 20rpx 0;
-
 					image {
 						margin-left: 14rpx;
 						border-radius: 14rpx;
@@ -169,7 +188,7 @@
 						margin-left: 18rpx;
 						position: relative;
 
-						.title {}
+						.text_title {}
 
 						.sell_point {
 							margin-top: 10rpx;

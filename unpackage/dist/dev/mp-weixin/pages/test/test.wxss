@@ -58,6 +58,11 @@
   color: #9d9d9d;
   margin: 20rpx;
 }
+.pics .right .item .labelTitle {
+  margin-left: 18rpx;
+  font-size: 24rpx;
+  color: #999999;
+}
 .pics .right .item .card {
   width: 100%;
   display: -webkit-box;
