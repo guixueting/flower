@@ -74,5 +74,27 @@
     },
     "uniStatistics": {  
         "enable": false
-    }
+    },
+	"h5" : {
+	    "devServer" : {
+	        "port" : 8000,
+	        "disableHostCheck" : true,
+	        "proxy" : {
+	            "/wscshop/*" : {
+	                "target" : "https://h5.youzan.com/",
+	                "changeOrigin" : true,
+	                "secure" : false
+	            },
+				"/wscgoods/*" : {
+				    "target" : "https://h5.youzan.com/",
+				    "changeOrigin" : true,
+				    "secure" : false
+				}
+	        },
+	        "https" : false
+	    },
+	    "router" : {
+	        "mode" : "hash"
+	    }
+	}
 }

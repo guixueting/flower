@@ -1,9 +1,13 @@
 const baseUrl = "https://h5.youzan.com"
-
 export function myRequestGet(url, data) {
 	return new Promise((resolve, reject) => {
 		uni.request({
+			//#ifndef H5
 			url: baseUrl + url,
+			//#endif
+			//#ifdef H5
+			url: url,
+			//#endif
 			method: "GET",
 			data: data,
 			success: function(res) {
@@ -17,21 +21,3 @@ export function myRequestGet(url, data) {
 }
 
 
-export function myRequestPost(url, data) {
-	return new Promise((resolve, reject) => {
-		uni.request({
-			url: baseUrl + url,
-			header: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			},
-			method: "POST",
-			data: data,
-			success: function(res) {
-				resolve(res.data)
-			},
-			fail: function(err) {
-				reject(err)
-			}
-		})
-	})
-}
