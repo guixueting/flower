@@ -19,48 +19,33 @@
 
 
 		<image :src="img2" mode="widthFix"></image>
-		
-		
-		
-		 
-		<!-- <view class="goods_list">
-			<view class="goods_item" v-for="item in arr" :key="item.id" @click="itemClick(item)">
-				<image :src="item.image_url" mode="widthFix"></image>
-				<view class="tit">
-					<text>{{item.title}}</text>
+		<!-- #ifndef  MP-WEIXIN -->
+		<waterfallsFlow :list="arr" @imageClick="imageClick">
+			<template v-slot:default="item">
+				<view class="goods_item">
+					<view class="tit">
+						<text>{{item.title}}</text>
+					</view>
+					<view class="sub_title">
+						<text>{{item.sub_title}}</text>
+					</view>
+					<view class="price">
+						<text>¥{{item.price}}</text>
+						<text></text>
+					</view>
 				</view>
-				<view class="sub_title">
-					<text>{{item.sub_title}}</text>
-				</view>
-				<view class="price">
-					<text>¥{{item.price}}</text>
-				</view>
-			</view>
-		</view> -->
-		 <!-- #ifndef  MP-WEIXIN -->
-		<waterfallsFlow  :list="arr" @imageClick="imageClick">
-		 <template v-slot:default="item">
-				<view class="tit">
-					<text>{{item.title}}</text>
-				</view>
-				<view class="sub_title">
-					<text>{{item.sub_title}}</text>
-				</view>
-				<view class="price">
-					<text>¥{{item.price}}</text>
-					<text></text>
-				</view>
-		      </template>
+			</template>
 		</waterfallsFlow>
 		<!-- #endif -->
-		
-		
-		
-		
-		
+
+
+
+
+
 		<!-- #ifdef MP-WEIXIN -->
 		<waterfallsFlow ref="waterfallsFlow" :list="arr" @imageClick="imageClick">
 			<view class="goods_item" v-for="(item, index) of arr" :key="index" slot="slot{{index}}">
+
 				<view class="tit">
 					<text>{{item.title}}</text>
 				</view>
@@ -74,13 +59,13 @@
 			</view>
 		</waterfallsFlow>
 		<!-- #endif -->
-		
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
+
 		<button class="more" @click="goMore(item)">查看更多</button>
 	</view>
 </template>
@@ -103,7 +88,11 @@
 				goods: [],
 				goods1: [],
 				goods2: [],
-				arr: []
+				arr: [],
+				price: "",
+				arr1: [],
+				arr2: [],
+				priceArr: []
 			}
 		},
 		components: {
@@ -157,6 +146,21 @@
 				);
 				this.goods2 = result2.data.list;
 				this.arr = [...this.goods, ...this.goods2, ...this.goods1];
+				this.priceArr = [this.arr[0].price, this.arr[11].price, 0, this.arr[5].price, this.arr[21].price];
+				for (var i = 0; i < this.swipers.length; i++) {
+					if (i == 2) {
+						continue
+					}
+					var obji = {
+						price: "",
+						arr1: [],
+					}
+					this.price = this.priceArr[i],
+						obji.price = this.price,
+						obji.arr1 = this.swipers[i],
+						this.arr2.push(obji)
+				}
+				console.log(this.arr2)
 				//console.log(this.arr[26].alias)
 			},
 			goMore(item) {
@@ -165,9 +169,10 @@
 				})
 			},
 			swipersClick(index) {
-				console.log(this.swipers[index]);
+				console.log(this.arr2[index].arr1);
+				// console.log(index)
 				uni.navigateTo({
-					url: "/pages/detail/detail?alias=" + this.swipers[index].alias+ "&price=" + this.swipers[index].price
+					url: "/pages/detail/detail?alias=" + this.arr2[index].arr1.alias + "&price=" + this.arr2[index].price
 				})
 			},
 			list1Click(index) {
@@ -183,18 +188,18 @@
 				})
 			},
 			itemClick(e) {
-				console.log("1111111111111111111111111",e);
+				console.log("1111111111111111111111111", e);
 				// console.log(this.arr[e].alias);
 				// uni.navigateTo({
 				// 	url:"https://shop10248754.m.youzan.com/v2/showcase/tag?alias="+this.arr[index].alias
 				// })
 			},
-			
-			imageClick(item){
-				console.log(item.alias)
-				 uni.navigateTo({
-					url: "/pages/detail/detail?alias=" + item.alias+ "&price=" + item.price
-				 })
+
+			imageClick(item) {
+				console.log(item)
+				uni.navigateTo({
+					url: "/pages/detail/detail?alias=" + item.alias + "&price=" + item.price
+				})
 			}
 
 		}
@@ -220,7 +225,8 @@
 			width: 750rpx;
 		}
 
-		.l1,.l2 {
+		.l1,
+		.l2 {
 			image {
 				display: inline-block;
 				float: left;
@@ -231,16 +237,9 @@
 
 
 		/* #ifdef H5 */
-		.goods_list {
-			display: flex;
-			// margin-left: 5px;
-			padding: 0 15rpx;
-			overflow: hidden;
-			// flex-direction: column;
-			flex-wrap: wrap;
-			background-color: #F9F9F9;
+		
 
-			.goods_item {
+		/deep/.goods_item {
 				width: 345rpx;
 				margin-bottom: 5rpx;
 				//background: #fff;
@@ -255,9 +254,9 @@
 					margin: 0 auto;
 				}
 
-				.tit {
+				/deep/.tit {
 					width: 100%;
-					height: 80rpx;
+					height: 60rpx;
 					font-weight: 800;
 					font-size: 13px;
 					display: -webkit-box;
@@ -266,7 +265,7 @@
 					overflow: hidden;
 				}
 
-				.sub_title {
+				/deep/.sub_title {
 					margin-top: 14rpx;
 					font-weight: 400;
 					font-size: 12px;
@@ -276,13 +275,13 @@
 					white-space: nowrap;
 				}
 
-				.price {
+				/deep/.price {
 					color: #74CAB2;
 					margin-top: 14px;
 					font-weight: 700;
 				}
 			}
-		}
+		
 
 		/* #endif */
 
@@ -297,7 +296,7 @@
 
 			.tit {
 				width: 100%;
-				height: 75rpx;
+				height: 68rpx;
 				font-weight: 800;
 				font-size: 13px;
 				display: -webkit-box;

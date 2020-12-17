@@ -10,8 +10,8 @@
 			<view class="item" v-for="(item,index) in arr" :key="index">
 				<text class="labelTitle" :id="'id'+index">{{item.title}}</text>
 				<view class="card" v-for="(item1,i) in item.arr1" :key="i" @click="navagateTo(i,item)">
-					<image :src="item1.image_url" mode="aspectFill" lazy-load="true"></image>
-					<view>
+					<view class="img" :style="{backgroundImage: 'url('+ item1.image_url +')'}"></view>
+					<view class="content">
 						<text class="text_title">{{item1.title}}</text>
 						<text class="sell_point">{{item1.sell_point}}</text>
 						<text class="activity_price">￥{{item1.activity_price}}</text>
@@ -44,11 +44,12 @@
 				//合并后的数据源
 				arr: [],
 				alias: "",
-				price:""
+				price: ""
 			}
 		},
 		onLoad() {
 			this.getPicsCate()
+			console.log(this.arr)
 		},
 		methods: {
 			async getPicsCate() {
@@ -128,11 +129,11 @@
 					this.active = 13;
 				}, 100)
 			},
-			navagateTo(i,item) {
-				this.alias=item.arr1[i].alias
-				this.price=item.arr1[i].price
+			navagateTo(i, item) {
+				this.alias = item.arr1[i].alias
+				this.price = item.arr1[i].price
 				uni.navigateTo({
-					url: "/pages/detail/detail?alias=" + this.alias+ "&price=" + this.price
+					url: "/pages/detail/detail?alias=" + this.alias + "&price=" + this.price
 				})
 			}
 		}
@@ -185,18 +186,23 @@
 				}
 
 				.card {
-					width: 100%;
 					display: flex;
 					margin: 20rpx 0;
 
-					image {
+
+					.img {
 						margin-left: 14rpx;
 						border-radius: 14rpx;
 						width: 200rpx;
 						height: 200rpx;
+						background-repeat: no-repeat;
+						background-size: cover;
+						background-position: center;
 					}
 
-					view {
+
+
+					.content {
 						flex: 1;
 						display: flex;
 						flex-direction: column;

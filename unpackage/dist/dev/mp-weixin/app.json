@@ -3,8 +3,8 @@
     "pages/index/index",
     "pages/shop/shop",
     "pages/classify/classify",
-    "pages/member/member",
-    "pages/cart/cart",
+    "pages/carts/carts",
+    "pages/user/user",
     "pages/moregoods/moregoods",
     "pages/detail/detail"
   ],
@@ -37,18 +37,19 @@
         "selectedIconPath": "/static/icon/md1.png"
       },
       {
-        "pagePath": "pages/cart/cart",
+        "pagePath": "pages/carts/carts",
         "text": "购物车",
         "iconPath": "/static/icon/gwc.png",
         "selectedIconPath": "/static/icon/gwc1.png"
       },
       {
-        "pagePath": "pages/member/member",
+        "pagePath": "pages/user/user",
         "text": "个人中心",
         "iconPath": "/static/icon/grzx.png",
         "selectedIconPath": "/static/icon/grzx1.png"
       }
     ]
   },
-  "usingComponents": {}
+  "usingComponents": {},
+  "sitemapLocation": "sitemap3.json"
 }

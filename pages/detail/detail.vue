@@ -61,7 +61,8 @@
 			</view>
 			<view class="flower">
 				<view class="flowertop">
-					<image src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1608130768368&di=5df7a20ad66f99bfa2b82d78db904883&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201708%2F11%2F20170811002726_eJXmY.thumb.700_0.jpeg" @click="toIndex" mode="scaleToFill"></image>
+					<image src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1608130768368&di=5df7a20ad66f99bfa2b82d78db904883&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201708%2F11%2F20170811002726_eJXmY.thumb.700_0.jpeg"
+					 @click="toIndex" mode="scaleToFill"></image>
 					<view class="shopName">花花万物</view>
 					<button @click="toIndex">进店逛逛</button>
 				</view>
@@ -83,7 +84,7 @@
 
 		</scroll-view>
 		<view class="goods_nav">
-			<uni-goods-nav :fill="true" :options="options" :buttonGroup="buttonGroup" @click="onClick" @buttonClick="buttonClick" />
+			<uni-goods-nav :fill="true" :button-group="buttonGroup" @click="onClick" @buttonClick="buttonClick"></uni-goods-nav>
 		</view>
 	</view>
 </template>
@@ -102,6 +103,11 @@
 	import {
 		myRequestGet
 	} from '@/utils/zgrequest.js'
+	import {
+		mapState,
+		mapMutations,
+		mapGetters
+	} from 'vuex'
 	export default {
 		data() {
 			return {
@@ -110,7 +116,6 @@
 				htmlNodes: [],
 				alias: "",
 				price: "",
-				// info: {}
 				options: [{
 					icon: 'shop',
 					text: '店铺',
@@ -123,13 +128,13 @@
 				}],
 				buttonGroup: [{
 						text: '加入购物车',
-						backgroundColor: '#DDF2EC',
-						color: '#A4DCCD',
-						info: 0
+						backgroundColor: '#ff0000',
+						color: '#fff',
+						info:0
 					},
 					{
 						text: '立即购买',
-						backgroundColor: '#65C4AA',
+						backgroundColor: '#ffa200',
 						color: '#fff'
 					}
 				]
@@ -143,9 +148,12 @@
 				this.getcontent()
 		},
 		methods: {
-			toIndex(){
+			...mapMutations({
+				addToCarts: 'addToCarts'
+			}),
+			toIndex() {
 				uni.reLaunch({
-					url:"/pages/index/index"
+					url: "/pages/index/index"
 				})
 			},
 			openPopup() {
@@ -161,7 +169,9 @@
 			async getcontent() {
 				let result1 = await myRequestGet("/wscshop/goods/showcase-components.json?alias=" + this.alias +
 					"&kdt_id=10056586")
-				this.content = formatRichText(result1.data.components[0].content)
+				this.content = formatRichText(result1.data.components[0].content ? result1.data.components[0].content : result1.data.components[
+										1].content)
+				// this.content = formatRichText(result1.data.components[0].content)
 				//#ifdef MP-ALIPAY
 				this.htmlNodes = parse(this.content)
 				//#endif
@@ -176,37 +186,54 @@
 					urls
 				})
 			},
+
 			onClick(e) {
-				uni.showToast({
-					title: `点击${e.content.text}`,
-					icon: 'none'
-				})
-				if(e.index===0){
-					uni.reLaunch({
-						url:"/pages/index/index"
+				if (e.index == 0) {
+					
+					//跳转到店铺
+					uni.switchTab({
+						url: ""
+					})
+				} else {
+					//跳转到购物车
+					uni.switchTab({
+						url: "/pages/carts/carts"
 					})
 				}
-				if(e.index===1){
-					uni.reLaunch({
-						url:"/pages/cart/cart"
-					})
-				}
+
 			},
 			buttonClick(e) {
 				if (e.index == 0) {
 					this.options[1].info++
+					     uni.showToast({
+					      title: `${e.content.text}成功`,
+					      icon: 'success',
+					      position:'center'
+					     })
+					     
+					    
+					//加入购物车
+					var good = {
+						alias: this.alias,
+						sellprice: this.price,
+						buynum: 1,
+						title: this.message.goodsData.goods.title,
+						img: this.message.goodsData.goods.pictures[0].url
+					}
+					this.addToCarts(good)
+					console.log(good, "gggggggggggg")
+				} else {
 					uni.showToast({
-						title: `${e.content.text}成功`,
-						icon: 'success',
-						position: 'center'
+					 title: '此功能尚未开通',
+					 icon: 'loading',
 					})
-				} else if (e.index == 1) {
-					uni.showToast({
-						title: '此功能尚未开通',
-						icon: 'loading',
+					uni.navigateTo({
+						url: ""
 					})
 				}
+				console.log(good.img, "6666666666666666666666666666666")
 			},
+
 			closePopup() {
 				this.$refs.popup.close()
 			},

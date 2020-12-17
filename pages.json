@@ -17,30 +17,28 @@
 			}
 		},
 		{
-			"path": "pages/member/member",
+			"path": "pages/carts/carts",
 			"style": {
 				"navigationBarTitleText": "TOMACADO花厨"
 			}
 		}, {
-			"path": "pages/cart/cart",
+			"path": "pages/user/user",
+			"style": {
+				"navigationBarTitleText": "TOMACADO花厨"
+			}
+		}, {
+			"path": "pages/moregoods/moregoods",
+			"style": {
+				"navigationBarTitleText": "TOMACADO花厨"
+			}
+		},
+		{
+			"path": "pages/detail/detail",
 			"style": {
 				"navigationBarTitleText": "TOMACADO花厨"
 			}
 		}
-	    
-        ,{
-            "path" : "pages/moregoods/moregoods",
-            "style" : {
-				"navigationBarTitleText": "TOMACADO花厨"
-			}
-        },
-		{
-			"path" : "pages/detail/detail",
-			"style" : {
-				"navigationBarTitleText": "TOMACADO花厨"
-			}
-		}
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarBackgroundColor": "#f9f9f9",
@@ -71,13 +69,13 @@
 				"selectedIconPath": "/static/icon/md1.png"
 			},
 			{
-				"pagePath": "pages/cart/cart",
+				"pagePath": "pages/carts/carts",
 				"text": "购物车",
 				"iconPath": "/static/icon/gwc.png",
 				"selectedIconPath": "/static/icon/gwc1.png"
 			},
 			{
-				"pagePath": "pages/member/member",
+				"pagePath": "pages/user/user",
 				"text": "个人中心",
 				"iconPath": "/static/icon/grzx.png",
 				"selectedIconPath": "/static/icon/grzx1.png"
