@@ -19,7 +19,12 @@
 
 
 		<image :src="img2" mode="widthFix"></image>
-		<!-- #ifndef  MP-WEIXIN -->
+
+
+
+
+
+		<!-- #ifdef H5 -->
 		<waterfallsFlow :list="arr" @imageClick="imageClick">
 			<template v-slot:default="item">
 				<view class="goods_item">
@@ -31,7 +36,6 @@
 					</view>
 					<view class="price">
 						<text>¥{{item.price}}</text>
-						<text></text>
 					</view>
 				</view>
 			</template>
@@ -45,7 +49,6 @@
 		<!-- #ifdef MP-WEIXIN -->
 		<waterfallsFlow ref="waterfallsFlow" :list="arr" @imageClick="imageClick">
 			<view class="goods_item" v-for="(item, index) of arr" :key="index" slot="slot{{index}}">
-
 				<view class="tit">
 					<text>{{item.title}}</text>
 				</view>
@@ -54,7 +57,6 @@
 				</view>
 				<view class="price">
 					<text>¥{{item.price}}</text>
-					<text></text>
 				</view>
 			</view>
 		</waterfallsFlow>
@@ -62,15 +64,32 @@
 
 
 
+		<!-- #ifdef  MP-ALIPAY -->
+		<view class="goods_list">
+			<view class="goods_item" v-for="item in arr" :key="item.id" @click="itemClick(item)">
+				<image :src="item.image_url" mode="widthFix"></image>
+				<view class="tit">
+					<text>{{item.title}}</text>
+				</view>
+				<view class="sub_title">
+					<text>{{item.sub_title}}</text>
+				</view>
+				<view class="price">
+					<text>¥{{item.price}}</text>
+				</view>
+			</view>
+		</view>
+		<!-- #endif -->
 
 
-
-
-		<button class="more" @click="goMore(item)">查看更多</button>
+		<button class="more" @click="goMore">查看更多</button>
 	</view>
 </template>
 <script>
+	//#ifndef  MP-ALIPAY 
 	import waterfallsFlow from "@/components/maramlee-waterfalls-flow/maramlee-waterfalls-flow.vue";
+	//#endif
+
 	import uniGrid from "@/components/uni-ui/uni-grid/uni-grid.vue"
 	import uniGridItem from "@/components/uni-ui/uni-grid-item/uni-grid-item.vue"
 	import uniList from "@/components/uni-ui/uni-list/uni-list.vue"
@@ -98,15 +117,17 @@
 		components: {
 			uniGrid,
 			uniGridItem,
+			//#ifndef  MP-ALIPAY 
 			waterfallsFlow
+			//#endif
 		},
 		onPullDownRefresh() {
 			// this.$refs.waterfallsFlow.refresh();
-			this.getSwipers().then(() => {
+			this.getProducts().then(() => {
 				uni.stopPullDownRefresh()
 			})
 
-			// 重新获取渲染列表
+
 		},
 		onLoad() {
 			this.getSwipers();
@@ -118,7 +139,6 @@
 					"/wscshop/weapp/homepage_detail.json?app_id=wx988cb9521c950d63&kdt_id=10056586&access_token=149a09b93a90072d40f6bfdb220b3d&platform=2&show_ad=true&check_multistore=true&async_components=goods%2Cump_limitdiscount&adaptor_components=text%2Ctitle%2Cstore%2Csearch%2Cfeature_video_search%2Ccoupon%2Ccube_v3%2Cnotice%2Cgroupon%2Cpoints_goods%2Cgoods%2Cgoods_recommend%2Ctag_list_top%2Ctag_list_left%2Cump_seckill"
 				);
 				this.swipers = result.data.components[1].sub_entry;
-
 				// console.log(this.swipers);
 				this.img1 = result.data.components[2].sub_entry[0].image_url;
 				//console.log(this.lujin);
@@ -148,9 +168,6 @@
 				this.arr = [...this.goods, ...this.goods2, ...this.goods1];
 				this.priceArr = [this.arr[0].price, this.arr[11].price, 0, this.arr[5].price, this.arr[21].price];
 				for (var i = 0; i < this.swipers.length; i++) {
-					if (i == 2) {
-						continue
-					}
 					var obji = {
 						price: "",
 						arr1: [],
@@ -165,43 +182,54 @@
 			},
 			goMore(item) {
 				uni.navigateTo({
-					url: "/pages/moregoods/moregoods"
+					url: "/pages/moregood/moregood"
 				})
 			},
 			swipersClick(index) {
 				console.log(this.arr2[index].arr1);
 				// console.log(index)
-				uni.navigateTo({
-					url: "/pages/detail/detail?alias=" + this.arr2[index].arr1.alias + "&price=" + this.arr2[index].price
-				})
+				if (index != 2) {
+					uni.navigateTo({
+						url: "/pages/detail/detail?alias=" + this.arr2[index].arr1.alias + "&price=" + this.arr2[index].price
+					})
+				} else {
+					uni.navigateTo({
+						url: "/pages/list/list?alias=c7lu9fz3",
+					})
+				}
+
 			},
 			list1Click(index) {
-				console.log(this.list1[index].alias);
+				console.log(this.list1[index].alias, "sssssssssssssssss");
 				uni.navigateTo({
-					url: "https://shop10248754.m.youzan.com/v2/showcase/tag?alias=" + this.list1[index].alias
+					url: "/pages/list/list?alias=" + this.list1[index].alias
 				})
 			},
 			list2Click(index) {
-				console.log(this.list2[index].alias);
+				console.log(this.list2[index].alias, "111111111111111111111");
 				uni.navigateTo({
-					url: "https://shop10248754.m.youzan.com/v2/showcase/tag?alias=" + this.list2[index].alias
+					url: "/pages/list/list?alias=" + this.list2[index].alias
 				})
 			},
-			itemClick(e) {
-				console.log("1111111111111111111111111", e);
-				// console.log(this.arr[e].alias);
-				// uni.navigateTo({
-				// 	url:"https://shop10248754.m.youzan.com/v2/showcase/tag?alias="+this.arr[index].alias
-				// })
-			},
-
-			imageClick(item) {
-				console.log(item)
+			itemClick(item) {
+				console.log("1111111111111111111111111", item);
 				uni.navigateTo({
 					url: "/pages/detail/detail?alias=" + item.alias + "&price=" + item.price
 				})
-			}
+			},
 
+			imageClick(item) {
+				console.log(item, "99999999999999999999999999999999999999")
+				uni.navigateTo({
+					url: "/pages/detail/detail?alias=" + item.alias + "&price=" + item.price
+				})
+			},
+
+			goMore() {
+				uni.navigateTo({
+					url: "/pages/more/more"
+				})
+			}
 		}
 	}
 </script>
@@ -237,11 +265,56 @@
 
 
 		/* #ifdef H5 */
-		
-
 		/deep/.goods_item {
+			width: 345rpx;
+			margin-bottom: 5rpx;
+			//background: #fff; 
+			background-color: white;
+			padding: 10rpx;
+			box-sizing: border-box;
+
+			/deep/.tit {
+				width: 100%;
+				height: 70rpx;
+				font-weight: 800;
+				font-size: 13px;
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 2;
+				overflow: hidden;
+			}
+
+			/deep/.sub_title {
+				margin-top: 14rpx;
+				font-weight: 400;
+				font-size: 12px;
+				color: grey;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+
+			/deep/.price {
+				color: #74CAB2;
+				margin-top: 14px;
+				font-weight: 700;
+			}
+		}
+
+		/* #endif */
+
+		/* #ifdef MP-ALIPAY */
+		.goods_list {
+			display: flex;
+			padding: 0 15rpx;
+			overflow: hidden;
+			flex-wrap: wrap;
+			background-color: #F9F9F9;
+
+			.goods_item {
 				width: 345rpx;
 				margin-bottom: 5rpx;
+				margin-left: 15rpx;
 				//background: #fff;
 				background-color: white;
 				padding: 10rpx;
@@ -254,9 +327,9 @@
 					margin: 0 auto;
 				}
 
-				/deep/.tit {
+				.tit {
 					width: 100%;
-					height: 60rpx;
+					height: 80rpx;
 					font-weight: 800;
 					font-size: 13px;
 					display: -webkit-box;
@@ -265,7 +338,7 @@
 					overflow: hidden;
 				}
 
-				/deep/.sub_title {
+				.sub_title {
 					margin-top: 14rpx;
 					font-weight: 400;
 					font-size: 12px;
@@ -275,17 +348,17 @@
 					white-space: nowrap;
 				}
 
-				/deep/.price {
+				.price {
 					color: #74CAB2;
 					margin-top: 14px;
 					font-weight: 700;
 				}
 			}
-		
+		}
 
 		/* #endif */
 
-		/* #ifdef MP-WEIXIN */
+		/* #ifdef MP-WEIXIN*/
 		.goods_item {
 			width: 345rpx;
 			margin-bottom: 5rpx;
@@ -296,7 +369,7 @@
 
 			.tit {
 				width: 100%;
-				height: 68rpx;
+				height: 75rpx;
 				font-weight: 800;
 				font-size: 13px;
 				display: -webkit-box;
@@ -323,8 +396,9 @@
 		}
 
 		/* #endif */
+
 		.more {
-			width: 600rpx;
+			width: 720rpx;
 			height: 80rpx;
 			line-height: 80rpx;
 			text-align: center;

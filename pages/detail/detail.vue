@@ -2,7 +2,7 @@
 	<view class="home">
 		<scroll-view scroll-y>
 			<swiper :autoplay="true" :interval="2000" circular>
-				<swiper-item v-for="item in message.goodsData.goods.pictures" :key="item.id">
+				<swiper-item v-for="item in (message.goodsData&&message.goodsData.goods.pictures)" :key="item.id">
 					<image :src="item.url" @click="previewImg(item.url)" mode="aspectFill"></image>
 				</swiper-item>
 			</swiper>
@@ -10,23 +10,14 @@
 				<view class="flowerPrice">￥{{price}}</view>
 				<view class="text">
 					<view class="mess">
-						{{message.goodsData.goods.title}}
+						{{message.goodsData&&message.goodsData.goods.title}}
 					</view>
 					<button @click="open" class="share">分享</button>
 					<view class="share1">
-						<uni-popup ref="popup" type="center">
-							<view style="background-color: rgb(248,248,248);width: 65vh; display: flex; flex-direction:column; text-align: center; height: 29vh; position: absolute; left: -375rpx; bottom: -50vh;">
-								<view style="background-color: white; border-bottom: 1px solid rgb(246,246,246); height: 7vh; line-height: 7vh; flex: 1;">
-									<uni-popup-share @select="select">推荐好物</uni-popup-share>
-								</view>
-								<view style="background-color: white; border-bottom: 1px solid rgb(246,246,246); height: 7vh; line-height: 7vh; flex: 1;">
-									<uni-popup-share @select="select">发送给朋友</uni-popup-share>
-								</view>
-								<view style="background-color: white; border-bottom: 1px solid rgb(246,246,246); height: 7vh; line-height: 7vh; flex: 1;">
-									<uni-popup-share @select="select">生成海报</uni-popup-share>
-								</view>
-								<view @click="closePopup" style="background-color: white; height: 7vh;margin-top: 1vh; line-height: 7vh; flex: 1;">
-									<uni-popup-share @select="select">取消</uni-popup-share>
+						<uni-popup ref="popup" type="bottom">
+							<view>
+								<view>
+									<uni-popup-share @select="select"></uni-popup-share>
 								</view>
 							</view>
 						</uni-popup>
@@ -35,36 +26,20 @@
 			</view>
 			<view class="postPrice">
 				<view>运费</view>
-				<view>{{message.goodsData.delivery.express.desc}}</view>
+				<view>{{message.goodsData&&message.goodsData.delivery.express&&message.goodsData.delivery.express.desc}}</view>
 			</view>
 			<view class="server">
 				<uni-list :border="false">
-					<uni-list-item title="服务  收货后结算  线下门店  快递请求" showArrow button clickable="true" @click="openPopup">
-						<uni-popup ref="popupp" type="center">
-							<view style="background-color: rgb(248,248,248);width: 65vh; display: flex; flex-direction:column; text-align: center; height: 29vh; position: absolute; left: -375rpx; bottom: -50vh;">
-								<view style="background-color: white; border-bottom: 1px solid rgb(246,246,246); height: 7vh; line-height: 7vh; flex: 1;">
-									<uni-popup-share @select="select">推荐好物</uni-popup-share>
-								</view>
-								<view style="background-color: white; border-bottom: 1px solid rgb(246,246,246); height: 7vh; line-height: 7vh; flex: 1;">
-									<uni-popup-share @select="select">发送给朋友</uni-popup-share>
-								</view>
-								<view style="background-color: white; border-bottom: 1px solid rgb(246,246,246); height: 7vh; line-height: 7vh; flex: 1;">
-									<uni-popup-share @select="select">生成海报</uni-popup-share>
-								</view>
-								<view style="background-color: white; height: 7vh;margin-top: 1vh; line-height: 7vh; flex: 1;">
-									<uni-popup-share @select="select">取消</uni-popup-share>
-								</view>
-							</view>
-						</uni-popup>
+					<uni-list-item title="服务  收货后结算  线下门店  快递请求" showArrow button clickable="true">
 					</uni-list-item>
 				</uni-list>
 			</view>
 			<view class="flower">
 				<view class="flowertop">
-					<image src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1608130768368&di=5df7a20ad66f99bfa2b82d78db904883&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201708%2F11%2F20170811002726_eJXmY.thumb.700_0.jpeg"
-					 @click="toIndex" mode="scaleToFill"></image>
+					<image src="https://img.yzcdn.cn/upload_files/2020/09/22/FmYr_eJgC0TeZ7zIjRvEIj76UkHW.jpg" mode="aspectFill"
+					 @click="toIndex"></image>
 					<view class="shopName">花花万物</view>
-					<button @click="toIndex">进店逛逛</button>
+					<view @click="toIndex" class="goIndex">进店逛逛</view>
 				</view>
 				<view class="flowerbottom">
 					<uni-list :border="false">
@@ -84,6 +59,9 @@
 
 		</scroll-view>
 		<view class="goods_nav">
+			<view class="num">
+				{{num}}
+			</view>
 			<uni-goods-nav :fill="true" :button-group="buttonGroup" @click="onClick" @buttonClick="buttonClick"></uni-goods-nav>
 		</view>
 	</view>
@@ -91,8 +69,8 @@
 
 <script>
 	import uniPopup from '@/components/uni-popup/uni-popup.vue'
+	import uniPopupShare from '@/components/uni-popup/uni-popup-share.vue'
 	import uniPopupMessage from '@/components/uni-popup/uni-popup-message.vue'
-	import uniPopupDialog from '@/components/uni-popup/uni-popup-dialog.vue'
 	import uniGoodsNav from '@/components/uni-ui/uni-goods-nav/uni-goods-nav.vue'
 	import uniList from "@/components/uni-ui/uni-list/uni-list.vue";
 	import uniListItem from "@/components/uni-ui/uni-list-item/uni-list-item.vue";
@@ -112,9 +90,11 @@
 		data() {
 			return {
 				message: [],
-				content: {},
-				htmlNodes: [],
+				content: "",
+				htmlNodes: "",
+				shoplist: {},
 				alias: "",
+				num: "",
 				price: "",
 				options: [{
 					icon: 'shop',
@@ -129,8 +109,7 @@
 				buttonGroup: [{
 						text: '加入购物车',
 						backgroundColor: '#ff0000',
-						color: '#fff',
-						info:0
+						color: '#fff'
 					},
 					{
 						text: '立即购买',
@@ -140,16 +119,32 @@
 				]
 			}
 		},
+		onShow() {
+			if (this.num < 6) {
+				this.num = this.carts.length.toString()
+			} else {
+				this.num = "5+"
+			}
+
+			console.log(this.num, "这是购物车长度")
+		},
 		onLoad(options) {
-			this.alias = options.alias,
-				this.price = options.price
+			this.alias = options.alias
+			this.price = options.price
 			console.log(this.price)
-			this.getmessage(),
-				this.getcontent()
+			this.getmessage()
+			this.getcontent()
+			if (this.num < 6) {
+				this.num = this.carts.length.toString()
+			} else {
+				this.num = "5+"
+			}
 		},
 		methods: {
 			...mapMutations({
-				addToCarts: 'addToCarts'
+				addToCarts: 'addToCarts',
+				addToShop: "addToShop",
+
 			}),
 			toIndex() {
 				uni.reLaunch({
@@ -169,8 +164,9 @@
 			async getcontent() {
 				let result1 = await myRequestGet("/wscshop/goods/showcase-components.json?alias=" + this.alias +
 					"&kdt_id=10056586")
-				this.content = formatRichText(result1.data.components[0].content ? result1.data.components[0].content : result1.data.components[
-										1].content)
+				this.content = formatRichText(result1.data.components[0].content ? result1.data.components[0].content : result1.data
+					.components[
+						1].content)
 				// this.content = formatRichText(result1.data.components[0].content)
 				//#ifdef MP-ALIPAY
 				this.htmlNodes = parse(this.content)
@@ -189,14 +185,14 @@
 
 			onClick(e) {
 				if (e.index == 0) {
-					
+
 					//跳转到店铺
 					uni.switchTab({
-						url: ""
+						url: "/pages/index/index"
 					})
 				} else {
 					//跳转到购物车
-					uni.switchTab({
+					uni.reLaunch({
 						url: "/pages/carts/carts"
 					})
 				}
@@ -204,14 +200,6 @@
 			},
 			buttonClick(e) {
 				if (e.index == 0) {
-					this.options[1].info++
-					     uni.showToast({
-					      title: `${e.content.text}成功`,
-					      icon: 'success',
-					      position:'center'
-					     })
-					     
-					    
 					//加入购物车
 					var good = {
 						alias: this.alias,
@@ -221,17 +209,41 @@
 						img: this.message.goodsData.goods.pictures[0].url
 					}
 					this.addToCarts(good)
-					console.log(good, "gggggggggggg")
-				} else {
+					if (this.num == 0) {
+						this.num = 1
+					}
+					for (var i = 0; i < this.carts.length; i++) {
+						if (this.carts[i].alias == good.alias) {
+							console.log("添加的商品已经存在了")
+							break
+						} else {
+							if (this.num < 6) {
+								this.num = this.carts.length
+							} else {
+								this.num = "5+"
+								console.log("加太多了显示不完")
+							}
+
+						}
+					}
 					uni.showToast({
-					 title: '此功能尚未开通',
-					 icon: 'loading',
+						title: "添加成功！",
+						duration: 2000
 					})
+				} else {
+					var shoplist = {
+						alias: this.alias,
+						sellprice: this.price,
+						buynum: 1,
+						title: this.message.goodsData.goods.title,
+						img: this.message.goodsData.goods.pictures[0].url
+					}
+					this.addToShop(shoplist)
+					this.addToCarts(shoplist)
 					uni.navigateTo({
-						url: ""
+						url: "/pages/pay/pay"
 					})
 				}
-				console.log(good.img, "6666666666666666666666666666666")
 			},
 
 			closePopup() {
@@ -246,9 +258,15 @@
 			uniListItem,
 			uniGoodsNav,
 			uniPopup,
+			uniPopupShare,
 			uniPopupMessage,
-			uniPopupDialog
-		}
+		},
+		computed: {
+			...mapState({
+				carts: "carts",
+				shop: "shop"
+			})
+		},
 	}
 </script>
 
@@ -325,6 +343,7 @@
 
 			.flowertop {
 				display: flex;
+				position: relative;
 
 				image {
 					height: 100rpx;
@@ -338,15 +357,19 @@
 					margin-left: 20rpx;
 				}
 
-				button {
+				.goIndex {
+					background-color: #ffffff;
+					width: 130rpx;
+					text-align: center;
 					height: 50rpx;
-					font-size: 15px;
-					border-radius: 20px;
-					color: #B6E3D7;
-					border: 1px solid #B6E3D7;
+					font-size: 12px;
+					border-radius: 10px;
+					color: #65c4aa;
+					border: 1px solid #65c4aa;
 					line-height: 50rpx;
 					margin-top: 70rpx;
-					margin-right: 20rpx;
+					position: absolute;
+					right: 30rpx;
 				}
 
 			}
@@ -366,6 +389,20 @@
 			position: fixed;
 			bottom: 0;
 			width: 100%;
+
+			.num {
+				font-weight: bold;
+				font-size: 15px;
+				z-index: 9999999;
+				width: 17px !important;
+				height: 17px !important;
+				color: red !important;
+				position: absolute !important;
+				top: 2px !important;
+				left: 83px !important;
+				text-align: center !important;
+				line-height: 15px !important;
+			}
 		}
 	}
 </style>

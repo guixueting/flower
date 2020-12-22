@@ -1,24 +1,29 @@
 <template>
-	<view class="pics">
-		<scroll-view scroll-y class="left">
-			<view @click="changeActive(index)" v-for="(item,index) in cates" :key="index" :class="index===active?'active':''">
-				{{item.title}}
-			</view>
-		</scroll-view>
-		<scroll-view class="right" scroll-y :scroll-into-view="clickId" :scroll-with-animation="true" @scroll="scroll_detail"
-		 @scrolltolower="scroll_bottom">
-			<view class="item" v-for="(item,index) in arr" :key="index">
-				<text class="labelTitle" :id="'id'+index">{{item.title}}</text>
-				<view class="card" v-for="(item1,i) in item.arr1" :key="i" @click="navagateTo(i,item)">
-					<view class="img" :style="{backgroundImage: 'url('+ item1.image_url +')'}"></view>
-					<view class="content">
-						<text class="text_title">{{item1.title}}</text>
-						<text class="sell_point">{{item1.sell_point}}</text>
-						<text class="activity_price">￥{{item1.activity_price}}</text>
+	<view>
+		<view @click="search">
+			<uni-search-bar placeholder="搜索商品"></uni-search-bar>
+		</view>
+		<view class="pics">
+			<scroll-view scroll-y class="left">
+				<view @click="changeActive(index)" v-for="(item,index) in cates" :key="index" :class="index===active?'active':''">
+					{{item.title}}
+				</view>
+			</scroll-view>
+			<scroll-view class="right" scroll-y :scroll-into-view="clickId" :scroll-with-animation="true" @scroll="scroll_detail"
+			 @scrolltolower="scroll_bottom">
+				<view class="item" v-for="(item,index) in arr" :key="index">
+					<text class="labelTitle" :id="'id'+index">{{item.title}}</text>
+					<view class="card" v-for="(item1,i) in item.arr1" :key="i" @click="navagateTo(i,item)">
+						<view class="img" :style="{backgroundImage: 'url('+ item1.image_url +')'}"></view>
+						<view class="content">
+							<text class="text_title">{{item1.title}}</text>
+							<text class="sell_point">{{item1.sell_point}}</text>
+							<text class="activity_price">￥{{item1.activity_price}}</text>
+						</view>
 					</view>
 				</view>
-			</view>
-		</scroll-view>
+			</scroll-view>
+		</view>
 	</view>
 </template>
 
@@ -26,6 +31,7 @@
 	import {
 		myRequestGet
 	} from '@/utils/zgrequest.js'
+	import uniSearchBar from '@/components/uni-ui/uni-search-bar/uni-search-bar.vue'
 	export default {
 		data() {
 			return {
@@ -50,6 +56,9 @@
 		onLoad() {
 			this.getPicsCate()
 			console.log(this.arr)
+		},
+		components: {
+			uniSearchBar
 		},
 		methods: {
 			async getPicsCate() {
@@ -77,6 +86,11 @@
 				}
 
 			},
+			search() {
+				uni.navigateTo({
+					url: "../search/search?secondData=" + encodeURIComponent(JSON.stringify(this.arr)),
+				})
+			},
 			//切换
 			changeActive(index) {
 				this.active = index;
@@ -97,10 +111,14 @@
 			},
 			//获取节点信息
 			get_node_details(options) {
+				// #ifndef MP-ALIPAY
 				const query = uni.createSelectorQuery().in(this); //获得实例
+				// #endif
+				// #ifdef MP-ALIPAY
+				const query = uni.createSelectorQuery();
+				// #endif
 				//获取多个节点方式
 				query.selectAll(".labelTitle").boundingClientRect(data => {
-					//console.log(data); //得到class类名为  selectAll的数组集合
 					this.topList = data.map(item => {
 						return Math.ceil(item.top);
 					});
@@ -139,6 +157,7 @@
 		}
 	}
 </script>
+
 
 <style lang="scss">
 	.pics {

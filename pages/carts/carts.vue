@@ -4,13 +4,19 @@
 			<image src="../../static/icon/cart.png" class="empty_bg"></image>
 			<text class="none">购物车还是空的</text>
 			<text class="go">赶紧买点宝贝慰劳下自己吧</text>
-			<input type="button" value="去逛逛" @click="gofirst" />
+			<button @click="gofirst">去逛逛</button>
 		</view>
-
+		<view class="manage" v-if="manageflag">
+			<view class="manage_left">
+				<image class="manage_img" src="https://img.yzcdn.cn/upload_files/2020/09/22/FmYr_eJgC0TeZ7zIjRvEIj76UkHW.jpg" mode="aspectFill"></image>
+				<text>花花万物旗舰店</text>
+			</view>
+			<text class="manage_right" @click="manage_del">管理</text>
+		</view>
 		<view class="shop" v-for="(item,index) in carts" :key="index">
 			<uni-swipe-action>
 				<uni-swipe-action-item>
-					<checkbox class="check" ref="checkbox" functionType="page" :checked="pageChecked" @pageClick="changeBoxFromPage(index)"></checkbox>
+					<checkbox class="check" :checked="carts[index].checked" functionType="page" @click="changeBoxFromPage(item,index)"></checkbox>
 					<view class="carts">
 						<text class=" title" @click="itemClick(index)">{{item.title}}</text>
 						<text class="price" @click="itemClick(index)">￥{{item.sellprice}}</text>
@@ -33,13 +39,19 @@
 			<uni-load-more v-if="!flag" :status="'loading'"></uni-load-more>
 			<uni-load-more v-else :status="'noMore'"></uni-load-more>
 		</view>
-		<view v-if="flag" class="account">
+		<view v-if="delflag" class="account">
 			<view class="left">
-				<checkbox class="checkall" ref="checkboxall" functionType="page" :checked="pageChecked" @pageClick="changeBoxall"></checkbox>
-				<text class="all">全选</text>
+				<text class="all" :class="checkall?'checkall2':'checkall'" functionType="page" @pageClick="changeBoxall">全选</text>
 			</view>
-			<text class="and">合计：￥{{sellprice}}</text>
-			<input type="button" value="结算" class="jiesuan" />
+			<button class="jiesuan" @click="deletecheck">删除</button>
+		</view>
+		<view v-if="accountflag" class="account">
+			<view class="left">
+				<!-- <checkbox class="checkall" functionType="page"  @pageClick="changeBoxall"></checkbox> -->
+				<text :class="checkall?'checkall2':'checkall'" functionType="page" @click="changeBoxall">全选</text>
+			</view>
+			<text class="and">合计：￥{{account}}</text>
+			<button class="jiesuan" @click="gopay">结算</button>
 		</view>
 	</view>
 </template>
@@ -61,15 +73,19 @@
 	export default {
 		data() {
 			return {
-				pageChecked: false,
 				show: "",
 				good: {},
 				goods: [],
+				pageChecked: false,
+				delflag: false,
+				checkall: false,
 				newgood: {},
-				checkedList: [],
 				flag: false,
+				accountflag: false,
 				alias: "",
 				account: 0,
+				manageflag: "",
+				accountflag: false,
 				n: "",
 				p: "",
 				pageindex: 1,
@@ -92,17 +108,23 @@
 					"2tnrf49a",
 					"0hrft5ym"
 				],
-				randomnum: "",
-				buynum: [],
-				sellprice: 0
+				randomnum: ""
 			}
 		},
 		methods: {
 			...mapMutations({
 				addToCarts: "addToCarts",
 				changeCarts: "changeCarts",
-				insteadcarts: "insteadcarts"
+				insteadcarts: "insteadcarts",
+				addToShop: "addToShop",
+				insteadshop: "insteadshop"
 			}),
+			manage_del() {
+				this.accountflag = false
+				this.delflag = true
+				this.judgecheck()
+				this.changeBoxall()
+			},
 			gofirst() {
 				uni.switchTab({
 					url: "/pages/index/index"
@@ -113,98 +135,187 @@
 					url: "/pages/detail/detail?alias=" + this.carts[index].alias + "&price=" + this.carts[index].sellprice
 				})
 			},
+
+			//#ifdef H5
+			changeBoxFromPage(item, index) {
+				if (this.carts[index].checked) {
+					this.carts[index].checked = false
+					this.shop.splice(0, this.shop.length)
+					this.insteadshop({
+						step: index
+					})
+					this.checkall = this.pageChecked
+					for (var i = 0; i < this.carts.length; i++) {
+						if (this.carts[i].checked) {
+							this.accountflag = true
+							break
+						} else {
+							this.accountflag = false
+						}
+					}
+					this.getAccount()
+					this.getShoplist()
+				} else {
+					this.carts[index].checked = true
+					this.accountflag = true
+					if (this.carts.length == 1) {
+						this.accountflag = true
+						this.checkall = true
+						console.log("全选应该变红,,,,单选触发")
+						this.getAccount()
+					} else {
+
+						for (var i = 0; i < this.carts.length; i++) {
+							if (!this.carts[i].checked) {
+								this.checkall = this.pageChecked
+								break
+							} else {
+								this.checkall = !this.pageChecked
+							}
+						}
+
+					}
+
+				}
+
+				this.getAccount()
+				this.getShoplist()
+			},
+			//#endif
 			swipeClick(index) {
 				uni.showModal({
 					title: '提示',
 					content: '是否删除',
 					success: res => {
-						this.sellprice -= this.carts[index].sellprice * this.carts[index].buynum
 						if (res.confirm) {
-							this.carts.splice(index, 1);
-							console.log(this.sellprice)
+							if (this.carts[index].checked) {
+								for (var i = 0; i < this.carts.length; i++) {
+									for (var j = 0; j < this.shop.length; j++) {
+										if (this.shop[j].alias == this.carts[i].alias) {
+											this.shop.splice(j, 1)
+											this.insteadshop({
+												step: 0
+											})
+										}
+									}
+								}
+
+							}
+							this.carts.splice(index, 1)
 							this.insteadcarts({
 								step: index
 							})
-							if (this.carts.length == 0) {
+
+							if (this.carts.length.toString() == 0) {
 								this.show = true
+								this.accountflag = false
+								this.manageflag = false
 							}
-
-
-
-
+							this.getAccount()
 						} else if (res.cancel) {
 							console.log('用户点击取消');
 						}
 					}
 				});
 			},
-			changeBoxFromPage(index) {
-				if (this.$refs.checkbox[index].checked) {
-					var price = this.carts[index].sellprice * this.carts[index].buynum
-					this.sellprice -= price
-					console.log(this.sellprice, '11111111111')
-				} else {
-					var price = this.carts[index].sellprice * this.carts[index].buynum
-					this.sellprice += price
-					console.log(this.sellprice, '2222222222')
-				}
-				if (this.$refs.checkbox[index].checked) {
-					this.$refs.checkbox[index].checked = this.pageChecked
+			changeBoxFromPage(item, index) {
+
+				if (this.carts[index].checked) {
+					this.carts[index].checked = false
+					this.shop.splice(0, this.shop.length)
+					this.insteadshop({
+						step: index
+					})
+					this.checkall = this.pageChecked
 					for (var i = 0; i < this.carts.length; i++) {
-						if (this.$refs.checkbox[i].checked) {
-							this.flag = true
-							this.$refs.checkboxall.checked = false
+						if (this.carts[i].checked) {
+							this.accountflag = true
 							break
 						} else {
-							this.flag = false
+							this.accountflag = false
 						}
 					}
-
+					this.getAccount()
+					this.getShoplist()
 				} else {
-					this.$refs.checkbox[index].checked = !this.pageChecked
-
-
-
-
-
-					this.flag = true
+					this.carts[index].checked = true
+					this.accountflag = true
 					if (this.carts.length == 1) {
-						this.$refs.checkboxall.checked = !this.pageChecked
+						this.accountflag = true
+						this.checkall = true
+						console.log("全选应该变红,,,,单选触发")
+						this.getAccount()
+					} else {
+
+						for (var i = 0; i < this.carts.length; i++) {
+							if (!this.carts[i].checked) {
+								this.checkall = this.pageChecked
+								break
+							} else {
+								this.checkall = !this.pageChecked
+							}
+						}
+
 					}
-					for (var i = 0; i < this.carts.length; i++) {
-						if (!this.$refs.checkbox[i].checked) {
-							this.$refs.checkboxall.checked = false
-							break
-						} else {
-							this.$refs.checkboxall.checked = true
+
+				}
+
+				this.getAccount()
+				this.getShoplist()
+			},
+			deletecheck() {
+				this.getShoplist()
+				for (var i = 0; i < this.carts.length; i++) {
+					for (var j = 0; j < this.shop.length; j++) {
+						if (this.shop[j].alias == this.carts[i].alias) {
+							this.carts.splice(i, 1)
+							this.insteadcarts({
+								step: i
+							})
 						}
 					}
 				}
-			},
-			changeBoxall() {
-				if (!this.$refs.checkboxall.checked) {
-					this.$refs.checkboxall.checked = !this.pageChecked
-					for (var i = 0; i < this.carts.length; i++) {
-						this.$refs.checkbox[i].checked = true
-						this.sellprice += this.carts[i].sellprice * this.carts[i].buynum
-					}
-
-				} else {
-					this.$refs.checkboxall.checked = this.pageChecked
-					for (var i = 0; i < this.carts.length; i++) {
-						this.$refs.checkbox[i].checked = false
-					}
-					this.sellprice = 0
-					this.flag = false
-
+				this.shop.splice(0, this.shop.length)
+				this.insteadshop({
+					step: 0
+				})
+				if (this.carts.length == 0) {
+					this.show = true
+					this.manageflag = false
 				}
-
+				this.delflag = false
+				this.accountflag = false
+				this.judgecheck()
 			},
+
+			changeBoxall() {
+				if (!this.checkall) {
+					this.checkall = !this.pageChecked
+					for (var i = 0; i < this.carts.length; i++) {
+						this.carts[i].checked = !this.pageChecked
+					}
+					this.getAccount()
+					this.getShoplist()
+				} else {
+					this.checkall = false
+					for (var i = 0; i < this.carts.length; i++) {
+						this.carts[i].checked = false
+					}
+					this.account = 0
+					this.accountflag = false
+					this.shop.splice(0, this.shop.length)
+					this.insteadshop({
+						step: 0
+					})
+				}
+			},
+
 			reduce(index) {
-				if (this.carts[index].buynum === 0) {
+				if (this.carts[index].buynum === 1) {
 					uni.showToast({
-						title: "数量已为空！",
-						duration: 2000
+						title: "该宝贝不能减少了呦~",
+						duration: 2000,
+						icon: "none"
 					})
 				} else {
 					this.num = this.carts[index].buynum - 1
@@ -213,19 +324,18 @@
 						sellprice: this.carts[index].sellprice,
 						buynum: this.num,
 						title: this.carts[index].title,
-						img: this.carts[index].img
+						img: this.carts[index].img,
+						checked: this.carts[index].checked
 					}
 					this.carts[index] = { ...good
 					}
 					var newgood = { ...this.carts[index]
 					}
-					this.changeCarts(newgood, index)
+					this.changeCarts(newgood)
+					this.getAccount()
+					this.getShoplist()
 				}
-				console.log(newgood, "99999999999999999999999999999")
-				if (this.$refs.checkbox[index].checked) {
-					this.sellprice = this.sellprice - parseInt(this.carts[index].sellprice)
-					console.log(this.sellprice)
-				}
+
 			},
 			plus(index) {
 				this.num = this.carts[index].buynum + 1
@@ -234,53 +344,120 @@
 					sellprice: this.carts[index].sellprice,
 					buynum: this.num,
 					title: this.carts[index].title,
-					img: this.carts[index].img
+					img: this.carts[index].img,
+					checked: this.carts[index].checked
 				}
 				this.carts[index] = { ...good
 				}
 				var newgood = { ...this.carts[index]
 				}
-				this.changeCarts(newgood, index)
-				console.log(newgood, "zzzzzzzzzzzzzzzzzzzzzzz")
-				// console.log(this.carts[index])
-				if (this.$refs.checkbox[index].checked) {
-					this.sellprice = this.sellprice + parseInt(this.carts[index].sellprice)
-					console.log(this.sellprice)
-				}
-
+				this.changeCarts(newgood)
+				this.getAccount()
+				this.getShoplist()
+			},
+			gopay() {
+				uni.navigateTo({
+					url: "/pages/pay/pay"
+				})
 			},
 			async getProducts() {
 				var randomnum = parseInt(Math.random() * 14)
-				console.log(randomnum, "nnnnnnnnnnnnnnnnnnnnnn")
 				let result = await myRequestGet(
 					"/wscshop/goods/goodsByTagAlias.json?kdt_id=10056586&alias=" + this.tags[randomnum])
-				console.log(result, "rrrrrrrrrrrrrr")
 				if (result.code === 0) {
 					this.goods = [...this.goods, ...result.data.list];
 				}
-				console.log(this.goods, 'xxxxxxxxxxxxxxxxxxxxxxxxx')
 			},
 			async judge() {
 				if (this.carts.length == 0) {
 					this.show = true
+					this.manageflag = false
 				} else {
 					this.show = false
+					this.manageflag = true
+				}
+			},
+			async judgecheck() {
+				for (var i = 0; i < this.carts.length; i++) {
+					if (!this.carts[i].checked) {
+						this.checkall = this.pageChecked
+						break
+					} else {
+						this.checkall = !this.pageChecked
+					}
+				}
+			},
+			async getAccount() {
+				let total = 0
+				if (this.carts.length == 1) {
+					if (this.carts[0].checked) {
+						this.checkall = true
+						console.log("全选应该变红，，，，函数触发的")
+						total = this.carts[0].sellprice * this.carts[0].buynum
+					} else {
+						this.checkall = false
+						this.accountflag = false
+						total = 0
+					}
+				} else if (this.carts.length > 1) {
+					for (var z = 0; z < this.carts.length; z++) {
+						if (this.carts[z].checked) {
+							total += this.carts[z].sellprice * this.carts[z].buynum
+						}
+					}
+				} else if (this.carts.length == 0) {
+					total = 0
 				}
 
+				this.account = total
+			},
+
+
+			async getShoplist() {
+				if (this.carts.length == 0) {
+					this.shop = []
+				} else if (this.carts.length > 0) {
+					for (var z = 0; z < this.carts.length; z++) {
+						if (this.carts[z].checked) {
+							var shoplist = {
+								alias: this.carts[z].alias,
+								sellprice: this.carts[z].sellprice,
+								buynum: this.carts[z].buynum,
+								title: this.carts[z].title,
+								img: this.carts[z].img,
+								checked: this.carts[z].checked
+							}
+							this.addToShop(shoplist)
+						}
+					}
+				}
+				console.log(this.shop, "这是要结算的商品")
 			}
 		},
 		computed: {
 			...mapState({
-				carts: "carts"
+				carts: "carts",
+				shop: "shop"
 			})
 		},
 		onShow() {
 			this.judge()
+			this.account = 0
+			this.accountflag = false
+			this.delflag = false
+			this.getProducts()
+			this.getShoplist()
+			this.shop.splice(0, this.shop.length)
+			this.insteadshop({
+				step: 0
+			})
+			for (var i = 0; i < this.carts.length; i++) {
+				this.carts[i].checked = false
+			}
 		},
 		onLoad() {
 			this.getProducts()
-			// this.judge()
-			// console.log(this.carts[0].checked,"aaaaaaaaaaaaa")
+			this.judge()
 		},
 		onReachBottom() {
 			this.pageindex++;
@@ -288,12 +465,10 @@
 				this.getProducts();
 			} else {
 				//没有更多数据了
-				this.flag = true;
+				this.flag = true
 			}
 		},
-		mounted() {
 
-		},
 		components: {
 			checkbox,
 			goodlist,
@@ -305,6 +480,42 @@
 </script>
 
 <style lang="scss" scoped>
+	.manage {
+		position: relative;
+		top: 0;
+		width: 750rpx;
+		height: 50px;
+		overflow: hidden;
+
+		.manage_left {
+			float: left;
+			top: 0;
+			left: 0;
+
+			.manage_img {
+				width: 30px;
+				height: 30px;
+				position: absolute;
+				top: 15px;
+				left: 15px;
+			}
+
+			text {
+				line-height: 60px;
+				margin-left: 57px;
+			}
+		}
+
+		.manage_right {
+			float: right;
+			right: 0;
+			top: 0;
+			line-height: 60px;
+			margin-right: 30px;
+			color: orange;
+		}
+	}
+
 	.empty {
 		width: 100%;
 		height: 620rpx;
@@ -338,7 +549,7 @@
 			top: 270px;
 		}
 
-		input {
+		button {
 			border-radius: 10px;
 			border: 1px solid #76A28C;
 			color: #76A28C;
@@ -350,6 +561,7 @@
 			top: 310px !important;
 			left: 50% !important;
 			margin-left: -50px !important;
+			outline: none;
 		}
 	}
 
@@ -378,8 +590,9 @@
 		height: 140rpx;
 		position: fixed;
 		bottom: 0;
-		background-color: yellow;
+		background-color: rgb(255, 250, 232);
 		display: flex;
+		z-index: 9999999;
 
 		.left {
 			width: 180rpx;
@@ -388,8 +601,18 @@
 			left: 0;
 		}
 
+		.checkall2 {
+			width: 80rpx;
+			height: 44rpx;
+			position: absolute;
+			left: 20rpx;
+			top: 50%;
+			margin-top: -22rpx;
+			color: red;
+		}
+
 		.checkall {
-			width: 44rpx;
+			width: 80rpx;
 			height: 44rpx;
 			position: absolute;
 			left: 20rpx;
@@ -397,13 +620,6 @@
 			margin-top: -22rpx;
 		}
 
-		.all {
-			width: 80rpx;
-			line-height: 140rpx;
-			position: absolute;
-			left: 90rpx;
-			font-size: 40rpx;
-		}
 
 		.and {
 			font-weight: bold;
@@ -423,8 +639,8 @@
 			bottom: 0;
 			line-height: 140rpx;
 			font-size: 40rpx;
-			color: red;
-			background-color: black;
+			color: white;
+			background-color: orangered;
 			text-align: center;
 		}
 	}

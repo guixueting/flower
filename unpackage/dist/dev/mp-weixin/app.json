@@ -3,10 +3,19 @@
     "pages/index/index",
     "pages/shop/shop",
     "pages/classify/classify",
+    "pages/search/search",
+    "pages/map/map",
     "pages/carts/carts",
     "pages/user/user",
-    "pages/moregoods/moregoods",
-    "pages/detail/detail"
+    "pages/detail/detail",
+    "pages/list/list",
+    "pages/set/set",
+    "pages/public/public",
+    "pages/order/order",
+    "pages/address/address",
+    "pages/more/more",
+    "pages/address/addressManage",
+    "pages/pay/pay"
   ],
   "subPackages": [],
   "window": {
@@ -51,5 +60,5 @@
     ]
   },
   "usingComponents": {},
-  "sitemapLocation": "sitemap3.json"
+  "sitemapLocation": "sitemap30.json"
 }

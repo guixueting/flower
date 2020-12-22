@@ -3,7 +3,7 @@
 		<view class="tit">精选商品</view>
 		<view class="goods_list">
 			<view class="goods_item" v-for="item in goods" :key="item.alias" @click="itemClick(item)">
-				<image :src="item.image_url"></image>
+				<image :src="item.image_url" mode="aspectFill"></image>
 				<view class="price">
 					<text>{{item.price}}</text>
 				</view>
@@ -38,11 +38,11 @@
 			border-bottom: 2px solid #eee;
 			margin-top: 70px;
 			margin-bottom: 3px;
-			color: blue;
+			color: #aaa;
 			height: 50px;
 			line-height: 50px;
 			text-align: center;
-			letter-spacing: 20px;
+			letter-spacing: 5px;
 			background: #fff;
 		}
 

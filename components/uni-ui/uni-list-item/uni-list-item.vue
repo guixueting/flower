@@ -103,7 +103,7 @@ export default {
 			default: false
 		},
 		clickable: {
-			type: Boolean,
+			// type: Boolean,
 			default: false
 		},
 		showArrow: {

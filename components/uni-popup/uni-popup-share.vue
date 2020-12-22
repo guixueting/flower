@@ -48,16 +48,6 @@
 						icon: 'https://img-cdn-qiniu.dcloud.net.cn/uni-ui/grid-1.png',
 						name: 'sina'
 					},
-					{
-						text: '百度',
-						icon: 'https://img-cdn-qiniu.dcloud.net.cn/uni-ui/grid-7.png',
-						name: 'copy'
-					},
-					{
-						text: '其他',
-						icon: 'https://img-cdn-qiniu.dcloud.net.cn/uni-ui/grid-5.png',
-						name: 'more'
-					}
 				]
 			}
 		},

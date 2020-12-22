@@ -1,5 +1,5 @@
 {
-    "name" : "test",
+    "name" : "花花万物",
     "appid" : "__UNI__EBA89D0",
     "description" : "",
     "versionName" : "1.0.0",
@@ -50,7 +50,10 @@
             /* ios打包配置 */
             "ios" : {},
             /* SDK配置 */
-            "sdkConfigs" : {}
+            "sdkConfigs" : {},
+            "splashscreen" : {
+                "androidStyle" : "default"
+            }
         }
     },
     /* 快应用特有相关 */
@@ -59,7 +62,8 @@
     "mp-weixin" : {
         "appid" : "",
         "setting" : {
-            "urlCheck" : false
+            "urlCheck" : false,
+            "minified" : false
         },
         "usingComponents" : true
     },
@@ -72,29 +76,29 @@
     "mp-toutiao" : {
         "usingComponents" : true
     },
-    "uniStatistics": {  
-        "enable": false
+    "uniStatistics" : {
+        "enable" : false
     },
-	"h5" : {
-	    "devServer" : {
-	        "port" : 8000,
-	        "disableHostCheck" : true,
-	        "proxy" : {
-	            "/wscshop/*" : {
-	                "target" : "https://h5.youzan.com/",
-	                "changeOrigin" : true,
-	                "secure" : false
-	            },
-				"/wscgoods/*" : {
-				    "target" : "https://h5.youzan.com/",
-				    "changeOrigin" : true,
-				    "secure" : false
-				}
-	        },
-	        "https" : false
-	    },
-	    "router" : {
-	        "mode" : "hash"
-	    }
-	}
+    "h5" : {
+        "devServer" : {
+            "port" : 8000,
+            "disableHostCheck" : true,
+            "proxy" : {
+                "/wscshop/*" : {
+                    "target" : "https://h5.youzan.com/",
+                    "changeOrigin" : true,
+                    "secure" : false
+                },
+                "/wscgoods/*" : {
+                    "target" : "https://h5.youzan.com/",
+                    "changeOrigin" : true,
+                    "secure" : false
+                }
+            },
+            "https" : false
+        },
+        "router" : {
+            "mode" : "hash"
+        }
+    }
 }

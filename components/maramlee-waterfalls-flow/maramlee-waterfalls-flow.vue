@@ -52,7 +52,7 @@
         :src="item[imageSrcKey] || ' '"
         @load="imageLoadHandle(index)"
         @error="imageLoadHandle(index)"
-        @click="$emit('image-click', item)"
+        @click="handleClick(item)"
       />
       <slot v-bind="item" />
     </view>
@@ -94,6 +94,9 @@ export default {
     this.refresh();
   },
   methods: {
+	  handleClick(item){
+		  this.$emit('imageClick', item)
+	  },
     imageLoadHandle(index) {
       const id = "waterfalls-list-id-" + this.list[index][this.idKey],
         query = uni.createSelectorQuery().in(this);

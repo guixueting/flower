@@ -12,7 +12,7 @@
 /******/ 		var moduleId, chunkId, i = 0, resolves = [];
 /******/ 		for(;i < chunkIds.length; i++) {
 /******/ 			chunkId = chunkIds[i];
-/******/ 			if(Object.prototype.hasOwnProperty.call(installedChunks, chunkId) && installedChunks[chunkId]) {
+/******/ 			if(installedChunks[chunkId]) {
 /******/ 				resolves.push(installedChunks[chunkId][0]);
 /******/ 			}
 /******/ 			installedChunks[chunkId] = 0;
@@ -48,7 +48,6 @@
 /******/ 				result = __webpack_require__(__webpack_require__.s = deferredModule[0]);
 /******/ 			}
 /******/ 		}
-/******/
 /******/ 		return result;
 /******/ 	}
 /******/
@@ -105,11 +104,11 @@
 /******/
 /******/
 /******/ 		// mini-css-extract-plugin CSS loading
-/******/ 		var cssChunks = {"components/maramlee-waterfalls-flow/maramlee-waterfalls-flow":1,"components/uni-ui/uni-grid-item/uni-grid-item":1,"components/uni-ui/uni-grid/uni-grid":1,"components/uni-ui/uni-swipe-action-item/uni-swipe-action-item":1,"components/checkbox/checkbox":1,"components/goodslist/goodslist":1,"components/uni-ui/uni-load-more/uni-load-more":1,"pages/user/components/com-nav":1,"components/uni-popup/uni-popup":1,"components/uni-popup/uni-popup-dialog":1,"components/uni-popup/uni-popup-message":1,"components/uni-ui/uni-goods-nav/uni-goods-nav":1,"components/uni-ui/uni-list-item/uni-list-item":1,"components/uni-ui/uni-list/uni-list":1,"pages/user/components/uni-grid":1,"pages/user/components/uni-grid-item":1,"pages/user/components/uni-swiper-dot":1,"components/uni-transition/uni-transition":1,"components/uni-ui/uni-icons/uni-icons":1,"components/uni-ui/uni-badge/uni-badge":1};
+/******/ 		var cssChunks = {"components/maramlee-waterfalls-flow/maramlee-waterfalls-flow":1,"components/uni-ui/uni-grid-item/uni-grid-item":1,"components/uni-ui/uni-grid/uni-grid":1,"components/uni-ui/uni-search-bar/uni-search-bar":1,"components/uni-ui/uni-swipe-action-item/uni-swipe-action-item":1,"components/checkbox/checkbox":1,"components/goodslist/goodslist":1,"components/uni-ui/uni-load-more/uni-load-more":1,"pages/user/components/com-nav":1,"components/uni-popup/uni-popup":1,"components/uni-popup/uni-popup-message":1,"components/uni-popup/uni-popup-share":1,"components/uni-ui/uni-goods-nav/uni-goods-nav":1,"components/uni-ui/uni-list-item/uni-list-item":1,"components/uni-ui/uni-list/uni-list":1,"components/uni-load-more/uni-load-more":1,"components/empty":1,"components/xuan-linkAddress/xuan-linkAddress":1,"components/yzc-paykeyboard/yzc-paykeyboard":1,"components/uni-ui/uni-icons/uni-icons":1,"pages/user/components/uni-grid":1,"pages/user/components/uni-grid-item":1,"pages/user/components/uni-swiper-dot":1,"components/uni-transition/uni-transition":1,"components/uni-ui/uni-badge/uni-badge":1};
 /******/ 		if(installedCssChunks[chunkId]) promises.push(installedCssChunks[chunkId]);
 /******/ 		else if(installedCssChunks[chunkId] !== 0 && cssChunks[chunkId]) {
 /******/ 			promises.push(installedCssChunks[chunkId] = new Promise(function(resolve, reject) {
-/******/ 				var href = "" + ({"components/maramlee-waterfalls-flow/maramlee-waterfalls-flow":"components/maramlee-waterfalls-flow/maramlee-waterfalls-flow","components/uni-ui/uni-grid-item/uni-grid-item":"components/uni-ui/uni-grid-item/uni-grid-item","components/uni-ui/uni-grid/uni-grid":"components/uni-ui/uni-grid/uni-grid","components/uni-ui/uni-swipe-action-item/uni-swipe-action-item":"components/uni-ui/uni-swipe-action-item/uni-swipe-action-item","components/checkbox/checkbox":"components/checkbox/checkbox","components/goodslist/goodslist":"components/goodslist/goodslist","components/uni-ui/uni-load-more/uni-load-more":"components/uni-ui/uni-load-more/uni-load-more","components/uni-ui/uni-swipe-action/uni-swipe-action":"components/uni-ui/uni-swipe-action/uni-swipe-action","pages/user/components/com-nav":"pages/user/components/com-nav","components/uni-popup/uni-popup":"components/uni-popup/uni-popup","components/uni-popup/uni-popup-dialog":"components/uni-popup/uni-popup-dialog","components/uni-popup/uni-popup-message":"components/uni-popup/uni-popup-message","components/uni-ui/uni-goods-nav/uni-goods-nav":"components/uni-ui/uni-goods-nav/uni-goods-nav","components/uni-ui/uni-list-item/uni-list-item":"components/uni-ui/uni-list-item/uni-list-item","components/uni-ui/uni-list/uni-list":"components/uni-ui/uni-list/uni-list","pages/user/components/uni-grid":"pages/user/components/uni-grid","pages/user/components/uni-grid-item":"pages/user/components/uni-grid-item","pages/user/components/uni-swiper-dot":"pages/user/components/uni-swiper-dot","components/uni-transition/uni-transition":"components/uni-transition/uni-transition","components/uni-ui/uni-icons/uni-icons":"components/uni-ui/uni-icons/uni-icons","components/uni-ui/uni-badge/uni-badge":"components/uni-ui/uni-badge/uni-badge"}[chunkId]||chunkId) + ".wxss";
+/******/ 				var href = "" + ({"components/maramlee-waterfalls-flow/maramlee-waterfalls-flow":"components/maramlee-waterfalls-flow/maramlee-waterfalls-flow","components/uni-ui/uni-grid-item/uni-grid-item":"components/uni-ui/uni-grid-item/uni-grid-item","components/uni-ui/uni-grid/uni-grid":"components/uni-ui/uni-grid/uni-grid","components/uni-ui/uni-search-bar/uni-search-bar":"components/uni-ui/uni-search-bar/uni-search-bar","components/uni-ui/uni-swipe-action-item/uni-swipe-action-item":"components/uni-ui/uni-swipe-action-item/uni-swipe-action-item","components/checkbox/checkbox":"components/checkbox/checkbox","components/goodslist/goodslist":"components/goodslist/goodslist","components/uni-ui/uni-load-more/uni-load-more":"components/uni-ui/uni-load-more/uni-load-more","components/uni-ui/uni-swipe-action/uni-swipe-action":"components/uni-ui/uni-swipe-action/uni-swipe-action","pages/user/components/com-nav":"pages/user/components/com-nav","components/uni-popup/uni-popup":"components/uni-popup/uni-popup","components/uni-popup/uni-popup-message":"components/uni-popup/uni-popup-message","components/uni-popup/uni-popup-share":"components/uni-popup/uni-popup-share","components/uni-ui/uni-goods-nav/uni-goods-nav":"components/uni-ui/uni-goods-nav/uni-goods-nav","components/uni-ui/uni-list-item/uni-list-item":"components/uni-ui/uni-list-item/uni-list-item","components/uni-ui/uni-list/uni-list":"components/uni-ui/uni-list/uni-list","components/uni-load-more/uni-load-more":"components/uni-load-more/uni-load-more","components/empty":"components/empty","components/xuan-linkAddress/xuan-linkAddress":"components/xuan-linkAddress/xuan-linkAddress","components/yzc-paykeyboard/yzc-paykeyboard":"components/yzc-paykeyboard/yzc-paykeyboard","components/uni-ui/uni-icons/uni-icons":"components/uni-ui/uni-icons/uni-icons","pages/user/components/uni-grid":"pages/user/components/uni-grid","pages/user/components/uni-grid-item":"pages/user/components/uni-grid-item","pages/user/components/uni-swiper-dot":"pages/user/components/uni-swiper-dot","components/uni-transition/uni-transition":"components/uni-transition/uni-transition","components/uni-ui/uni-badge/uni-badge":"components/uni-ui/uni-badge/uni-badge"}[chunkId]||chunkId) + ".wxss";
 /******/ 				var fullhref = __webpack_require__.p + href;
 /******/ 				var existingLinkTags = document.getElementsByTagName("link");
 /******/ 				for(var i = 0; i < existingLinkTags.length; i++) {
@@ -130,7 +129,6 @@
 /******/ 				linkTag.onerror = function(event) {
 /******/ 					var request = event && event.target && event.target.src || fullhref;
 /******/ 					var err = new Error("Loading CSS chunk " + chunkId + " failed.\n(" + request + ")");
-/******/ 					err.code = "CSS_CHUNK_LOAD_FAILED";
 /******/ 					err.request = request;
 /******/ 					delete installedCssChunks[chunkId]
 /******/ 					linkTag.parentNode.removeChild(linkTag)
@@ -171,8 +169,6 @@
 /******/ 				}
 /******/ 				script.src = jsonpScriptSrc(chunkId);
 /******/
-/******/ 				// create error before stack unwound to get useful stacktrace later
-/******/ 				var error = new Error();
 /******/ 				onScriptComplete = function (event) {
 /******/ 					// avoid mem leaks in IE.
 /******/ 					script.onerror = script.onload = null;
@@ -182,8 +178,7 @@
 /******/ 						if(chunk) {
 /******/ 							var errorType = event && (event.type === 'load' ? 'missing' : event.type);
 /******/ 							var realSrc = event && event.target && event.target.src;
-/******/ 							error.message = 'Loading chunk ' + chunkId + ' failed.\n(' + errorType + ': ' + realSrc + ')';
-/******/ 							error.name = 'ChunkLoadError';
+/******/ 							var error = new Error('Loading chunk ' + chunkId + ' failed.\n(' + errorType + ': ' + realSrc + ')');
 /******/ 							error.type = errorType;
 /******/ 							error.request = realSrc;
 /******/ 							chunk[1](error);

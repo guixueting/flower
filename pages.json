@@ -2,43 +2,102 @@
 	"pages": [{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "TOMACADO花厨"
+				"navigationBarTitleText": "花花万物"
 			}
 		}, {
 			"path": "pages/shop/shop",
 			"style": {
-				"navigationBarTitleText": "TOMACADO花厨"
+				"navigationBarTitleText": "花花万物全国门店",
+				"enablePullDownRefresh": true
 			}
 		},
 		{
 			"path": "pages/classify/classify",
 			"style": {
-				"navigationBarTitleText": "TOMACADO花厨"
+				"navigationBarTitleText": "商品分组"
+			}
+		},
+		{
+			"path": "pages/search/search",
+			"style": {
+				"navigationBarTitleText": "花花万物"
+			}
+		},
+		{
+			"path": "pages/map/map",
+			"style": {
+				"navigationBarTitleText": "位置信息"
 			}
 		},
 		{
 			"path": "pages/carts/carts",
 			"style": {
-				"navigationBarTitleText": "TOMACADO花厨"
+				"navigationBarTitleText": "购物车"
 			}
 		}, {
 			"path": "pages/user/user",
 			"style": {
-				"navigationBarTitleText": "TOMACADO花厨"
+				"navigationBarTitleText": "个人中心"
 			}
-		}, {
-			"path": "pages/moregoods/moregoods",
-			"style": {
-				"navigationBarTitleText": "TOMACADO花厨"
-			}
-		},
+		}, 
 		{
 			"path": "pages/detail/detail",
 			"style": {
-				"navigationBarTitleText": "TOMACADO花厨"
+				"navigationBarTitleText": "详情展示"
+			}
+		},
+		{
+			"path": "pages/list/list",
+			"style": {
+				"navigationBarTitleText": "商品列表"
+			}
+		},
+		{
+			"path": "pages/set/set",
+			"style": {
+				"navigationBarTitleText": "设置"
+			}
+		},
+		{
+			"path": "pages/public/public",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/order/order",
+			"style": {
+				"navigationBarTitleText": "我的订单"
+			}
+		},
+		{
+			"path": "pages/address/address",
+			"style": {
+				"navigationBarTitleText": "收货地址"
+			}
+		},
+		{
+			"path": "pages/more/more",
+			"style": {
+				"navigationBarTitleText": "最热商品"
+			}
+		},
+		{
+			"path": "pages/address/addressManage",
+			"style": {
+				"navigationBarTitleText": ""
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/pay/pay",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarBackgroundColor": "#f9f9f9",
